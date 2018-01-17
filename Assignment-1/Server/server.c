@@ -3,7 +3,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <stdlib.h>
-
+#include <unistd.h>
 /* This is the server side of the code.
  * The connection request is sent from this side.
  * The files are sent from this side after the connection is established.
