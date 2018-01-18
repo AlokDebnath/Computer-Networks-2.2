@@ -8,6 +8,8 @@
 #include <arpa/inet.h>
 #define PORT 8080
 char buffer[1024] = {0};
+char filename[1024] = {0};
+char response[100] = {0};
 
 int main(int argc, char const *argv[])
 {
@@ -16,8 +18,6 @@ int main(int argc, char const *argv[])
   struct sockaddr_in serv_addr;
   char *hello = "Hello from client";
   char *done = "Done";
-  char filename[1024];
-  char response[100];
   int i, stillRead=1;
 
   if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
@@ -48,20 +48,8 @@ int main(int argc, char const *argv[])
 
   // Below is the Interaction that we need to worry about. Above is all boilerplate.
 
-  //Hello Interaction...good proof of concept
-  send(sock , hello , strlen(hello) , 0 );  // send the message.
-  printf("Hello message sent\n");
-  valread = read( sock , buffer, 1024);  // receive message back from server, into the buffer
-  printf("%s\n",buffer );
-
   /*File Transfer Below*/
     
-  //Was asked which file client wants
-  buffer[0] = '\0';
-  valread = read( sock , buffer, 1024);
-  printf("%s\n",buffer );
-
-
   //Response with file name
   printf("Enter file name: ");
   scanf("%s", filename);
@@ -69,16 +57,17 @@ int main(int argc, char const *argv[])
   
   
   //Response
-  buffer[0] = '\0';
+  for(i = 0; i < 1024; response[i++] = '\0');
   valread = read(sock, buffer, 1024);
   for(i = 0; i < valread; response[i] = buffer[i], i++);
   response[valread] = '\0';
 
-  for(i = 0; i < valread; printf("%c", buffer[i++]));
-
-  if (strcmp(response, "Sending...\n") == 0)
+  //  for(i = 0; i < valread; printf("%c", buffer[i++]));
+  //fflush(stdout);
+  if (strcmp(response, "Sending...") == 0)
     {
       FILE* fp = fopen(filename, "wb");
+      send(sock, "Ok", strlen("Ok"), 0);
       while(stillRead)
         {
           buffer[0] = '\0';
@@ -97,5 +86,10 @@ int main(int argc, char const *argv[])
           send(sock, done, strlen(done), 0);
         }
     }
+  else {
+    printf("%s\n", response);
+  }
+  printf("Closing Connection\n");
+  fflush(stdout);
   return 0;
 }

@@ -59,20 +59,10 @@ int main(int argc, char const *argv[])
 
     //Above can be thought of as boilerplate.
 
-    printf("%s", buffer);
-    //Hello Interaction...good proof of concept
-    valread = read( new_socket , buffer, 1024);  // read infromation received into the buffer
-    printf("%s\n",buffer );
-    send(new_socket , hello , strlen(hello) , 0 );  // use sendto() and recvfrom() for DGRAM
-    printf("Hello message sent\n");
-
     /*File Transfer Below*/
     char fileError[] = "File Couldn't be Accessed\n";
 
     //Asked What file
-    char *reqFile = "What file do you want? (Send File Name)\n";
-    send(new_socket , reqFile , strlen(reqFile) , 0 );
-    printf("Asked what file client wants\n");
     valread = read( new_socket , buffer, 1024);  
     int i,rd;
     char sFile[1024], rbuf[1024];
@@ -83,17 +73,20 @@ int main(int argc, char const *argv[])
     
     if (!f){
       send(new_socket, fileError, strlen(fileError), 0);
+      printf("Error Opening File\n");
     }
     else{
-      send(new_socket, "Sending...\n", strlen("Sending...\n"), 0);
+      fflush(stdout);
+      send(new_socket, "Sending...", strlen("Sending..."), 0);
+      valread = read(new_socket , buffer, 1024);
       while(rd = fread(rbuf, 1, 16, f) != 0)
         {
           send(new_socket, rbuf, 16, 0);
-          for(i = 0; i < 16; rbuf[i++] = '\0');
-          buffer[0] = '\0';
           valread = read(new_socket, buffer, 1024);
         }
       send(new_socket, "Done", strlen("Done"), 0);
     }
+    printf("Closing Connection\n");
+    fflush(stdout);
     return 0;
 }
