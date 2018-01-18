@@ -57,7 +57,7 @@ int main(int argc, char const *argv[])
   printf("%s\n",buffer );
 
   //Response with file name
-  char filename[] = "file1.txt";
+  char filename[] = "file2.txt";
   fflush(stdout);
   send(sock, filename, strlen(filename), 0);
   

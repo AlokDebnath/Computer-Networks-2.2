@@ -83,6 +83,7 @@ int main(int argc, char const *argv[])
     valread = read( new_socket , buffer, 1024);  
     int i,rd;
     char sFile[1024], rbuf[1024];
+    for(i = 0; i < 16; rbuf[i++] = '\0');
     for(i = 0; i < valread; sFile[i] = buffer[i], i++);
     sFile[valread] = '\0';
     FILE* f = fopen(sFile,"rb");
@@ -92,9 +93,10 @@ int main(int argc, char const *argv[])
     }
     else{
       send(new_socket, "Sending...\n", strlen("Sending...\n"), 0);
-      while(rd = fread(rbuf, 1, 16, f) > 0)
+      while(rd = fread(rbuf, 1, 16, f) != 0)
         {
           send(new_socket, rbuf, 16, 0);
+          for(i = 0; i < 16; rbuf[i++] = '\0');
           valread = read(new_socket, buffer, 1024);
         }
       send(new_socket, "Done", strlen("Done"), 0);
