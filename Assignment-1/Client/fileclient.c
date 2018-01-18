@@ -15,6 +15,11 @@ int main(int argc, char const *argv[])
   int sock = 0, valread;
   struct sockaddr_in serv_addr;
   char *hello = "Hello from client";
+  char *done = "Done";
+  char filename[1024];
+  char response[100];
+  int i, stillRead=1;
+
   if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
     {
       printf("\n Socket creation error \n");
@@ -44,7 +49,6 @@ int main(int argc, char const *argv[])
   // Below is the Interaction that we need to worry about. Above is all boilerplate.
 
   //Hello Interaction...good proof of concept
-  fflush(stdout);
   send(sock , hello , strlen(hello) , 0 );  // send the message.
   printf("Hello message sent\n");
   valread = read( sock , buffer, 1024);  // receive message back from server, into the buffer
@@ -53,45 +57,45 @@ int main(int argc, char const *argv[])
   /*File Transfer Below*/
     
   //Was asked which file client wants
+  buffer[0] = '\0';
   valread = read( sock , buffer, 1024);
   printf("%s\n",buffer );
 
+
   //Response with file name
-  char filename[] = "file2.txt";
-  fflush(stdout);
+  printf("Enter file name: ");
+  scanf("%s", filename);
   send(sock, filename, strlen(filename), 0);
   
+  
   //Response
-  char response[100];
-  int i, stillRead=1;
+  buffer[0] = '\0';
   valread = read(sock, buffer, 1024);
   for(i = 0; i < valread; response[i] = buffer[i], i++);
   response[valread] = '\0';
 
   for(i = 0; i < valread; printf("%c", buffer[i++]));
+
   if (strcmp(response, "Sending...\n") == 0)
     {
-      fflush(stdout);
       FILE* fp = fopen(filename, "wb");
       while(stillRead)
         {
-          fflush(stdout);
+          buffer[0] = '\0';
           valread = read(sock, buffer, 1024);
-          fflush(stdout);
-          printf("%d\n", stillRead++);
+          //printf("%d\n", stillRead++);
           if(valread == 4){
             buffer[4] = '\0';
             if(strcmp(buffer, "Done") == 0){
               stillRead = 0;
-              printf("Done");
+              printf("Done\n");
               break;
             }
           }
           fseek(fp, 0, SEEK_END);
           fwrite(buffer, valread, 1, fp);
-          send(sock, "Got", strlen("Got"), 0);
+          send(sock, done, strlen(done), 0);
         }
     }
-  fflush(stdout);
   return 0;
 }

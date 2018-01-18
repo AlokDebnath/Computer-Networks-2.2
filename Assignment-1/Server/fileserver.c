@@ -6,13 +6,6 @@
 #include <unistd.h>
 #define PORT 8080
 
-void clearBuffer(char *buffer)
-{
-  int i;
-  for (i = 0; i < 1024; buffer[i++] = 0);
-  return;
-}
-
 int main(int argc, char const *argv[])
 {
     int server_fd, new_socket, valread;
@@ -97,10 +90,10 @@ int main(int argc, char const *argv[])
         {
           send(new_socket, rbuf, 16, 0);
           for(i = 0; i < 16; rbuf[i++] = '\0');
+          buffer[0] = '\0';
           valread = read(new_socket, buffer, 1024);
         }
       send(new_socket, "Done", strlen("Done"), 0);
     }
-    fflush(stdout);
     return 0;
 }
