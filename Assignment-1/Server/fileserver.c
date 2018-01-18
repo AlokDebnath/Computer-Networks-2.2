@@ -69,30 +69,33 @@ int main(int argc, char const *argv[])
     /*File Transfer Below*/
     char fileError[] = "File Couldn't be Accessed\n";
 
-    //Asked What file
+    //Receive what file to look for
     valread = read( new_socket , buffer, 1024);  
     int i,rd;
     char sFile[1024], rbuf[1024];
     for(i = 0; i < 16; rbuf[i++] = '\0');
     for(i = 0; i < valread; sFile[i] = buffer[i], i++);
     sFile[valread] = '\0';
+    // Open the file
     FILE* f = fopen(sFile,"rb");
-    
     if (!f){
       send(new_socket, fileError, strlen(fileError), 0);
-      printf("Error Opening File\n");
+      printf("Error Opening File\n"); //Error Handling
     }
     else{
       fflush(stdout);
-      send(new_socket, "Sending...", strlen("Sending..."), 0);
-      valread = read(new_socket , buffer, 1024);
+      send(new_socket, "Sending...", strlen("Sending..."), 0); //Tell Client about to send
+      valread = read(new_socket , buffer, 1024); //Receive confirmation from client
+
+      //Sending the File
       while(rd = fread(rbuf, 1, 16, f) != 0)
         {
           send(new_socket, rbuf, 16, 0);
           valread = read(new_socket, buffer, 1024);
           clearBuffer(rbuf);
         }
-      send(new_socket, "Done", strlen("Done"), 0);
+      send(new_socket, "Done", strlen("Done"), 0); //Done Sending the File.
+      
     }
     printf("Closing Connection\n");
     fflush(stdout);

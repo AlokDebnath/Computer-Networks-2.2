@@ -57,22 +57,21 @@ int main(int argc, char const *argv[])
   send(sock, filename, strlen(filename), 0);
   
   
-  //Response
+  //This is where we hopefully receive Sending... from the server
   for(i = 0; i < 1024; response[i++] = '\0');
   valread = read(sock, buffer, 1024);
   for(i = 0; i < valread; response[i] = buffer[i], i++);
   response[valread] = '\0';
 
-  //  for(i = 0; i < valread; printf("%c", buffer[i++]));
-  //fflush(stdout);
+  //If Sending, then prepare to write into the file
   if (strcmp(response, "Sending...") == 0)
     {
-      FILE* fp = fopen(filename, "wb");
-      send(sock, "Ok", strlen("Ok"), 0);
+      FILE* fp = fopen(filename, "wb"); //Create the file
+      send(sock, "Ok", strlen("Ok"), 0); //Response cycle, to help with writing.
       while(stillRead)
         {
           valread = read(sock, buffer, 1024);
-          //          printf("%d\n", valread);
+          // Exiting the Writing Loop when Server says Done.
           if(valread == 4){
             buffer[4] = '\0';
             if(strcmp(buffer, "Done") == 0){
@@ -83,7 +82,6 @@ int main(int argc, char const *argv[])
           }
           fseek(fp, 0, SEEK_END);
           fwrite(buffer, valread, 1, fp);
-          //          fwrite("K", 1, 1, fp);
           send(sock, done, strlen(done), 0);
         }
     }
