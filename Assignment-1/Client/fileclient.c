@@ -11,6 +11,7 @@ char buffer[1024] = {0};
 char filename[1024] = {0};
 char response[100] = {0};
 
+
 int main(int argc, char const *argv[])
 {
   struct sockaddr_in address;
@@ -70,9 +71,8 @@ int main(int argc, char const *argv[])
       send(sock, "Ok", strlen("Ok"), 0);
       while(stillRead)
         {
-          buffer[0] = '\0';
           valread = read(sock, buffer, 1024);
-          //printf("%d\n", stillRead++);
+          //          printf("%d\n", valread);
           if(valread == 4){
             buffer[4] = '\0';
             if(strcmp(buffer, "Done") == 0){
@@ -83,6 +83,7 @@ int main(int argc, char const *argv[])
           }
           fseek(fp, 0, SEEK_END);
           fwrite(buffer, valread, 1, fp);
+          //          fwrite("K", 1, 1, fp);
           send(sock, done, strlen(done), 0);
         }
     }
