@@ -109,6 +109,7 @@ int main(int argc, char const *argv[])
       break;
     }
     printf("Closing Connection\n");
+    close(sock);
     fflush(stdout);
   }
     
