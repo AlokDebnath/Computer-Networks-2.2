@@ -21,23 +21,25 @@
 ## Running the Persistent Part
    We have coded a server and a client for a persistent and a non-persistent connection. The file structure is as follows:
    Assignment-1
-	|- Persistent
+	|- Q1
 	|	|- Server
+    |       |- Data
 	|	|- Client
-	|- Non-persistent
-	|	|- ServerNonPersis
-	|	|- ClientNonPersis
+	|- Q2
+	|	|- Server
+    |       |-Data  
+	|	|- Client
 
    The instructions to run are as follows:
    1. Open terminal (Ctrl-Alt-T)
    2. Run the following commands:
    ls (to find out the files needed)
-   cd Assignment-1/Persistent/Server
+   cd Assignment-1/Q2/Server
    gcc fileserver.c
    ./a.out
    3. Open another terminal tab/window and DO NOT CLOSE the server tab/window
    4. Run the following commands:
-   cd Assignment-1/Persistent/Client
+   cd Assignment-1/Q2/Client
    gcc fileclient.c
    ./a.out
    5. When prompted input the file name to transfer (file1.txt, file2.txt, adventur.txt, SampleJPGImage_2mbmb.jpg).
@@ -48,4 +50,4 @@
 The acid test we used was to transfer a smaple 2mb picture to see if the transfer was taking place correctly and the pictures after transfer are identical.
 
 ## Running the Non-persistent Part
-   All instructions are the same and the files are also the same except when instead of "cd Persistent/Server/" do "cd Non-Persistent/ServerNonPersis". Similarly for client.
+   All instructions are the same and the files are also the same except when instead of "cd Q2/Server/" do "cd Q1/Server". Similarly for client.

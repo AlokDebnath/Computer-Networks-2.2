@@ -77,11 +77,13 @@ int main(int argc, char const *argv[])
     valread = read( new_socket , buffer, 1024);  
     int i,rd;
     char sFile[1024], rbuf[1024], continueSend[1024];
+    char fileFinal[] = "Data/";
     for(i = 0; i < 16; rbuf[i++] = '\0');
     for(i = 0; i < valread; sFile[i] = buffer[i], i++);
     sFile[valread] = '\0';
     // Open the file
-    FILE* f = fopen(sFile,"rb");
+    strcat(fileFinal, sFile);
+    FILE* f = fopen(fileFinal,"rb");
     if (!f){
       send(new_socket, fileError, strlen(fileError), 0);
       printf("Error in Opening File\n"); //Error Handling
